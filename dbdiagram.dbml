@@ -1,11 +1,25 @@
+// https://dbdiagram.io/d/63b1a3057d39e42284e85883
 Table users {
-  id [pk]
+  id int [pk]
   username varchar
   password varchar
   email varchar
   phone_no varchar
-
+  first_name varchar
+  last_name varchar
+  avatar int
   address_id int
+  token varchar
+  verified bit
+  enabled bit
+  created_at bigint
+  last_updated bigint
+}
+
+Table customers {
+  id  int [pk]
+  username varchar //should we use username as foreign key??
+  //...users
 }
 
 Table roles {
@@ -26,6 +40,7 @@ Table brands {
   id int [pk]
   name varchar
   product_id int
+  logo int
 }
 
 Table collections {
@@ -43,17 +58,19 @@ Table categories {
 Table products {
   id int [pk]
   name varchar
-  volume int
-  price float
+  alias varchar
+  short_desc varchar
+  full_desc text
+  // price float ???
   brand_id int
   discount_id int
 }
 
 Table images {
   id int [pk]
-  name varchar
   dtype varchar
-  domain_id int
+  metatada json
+  model_id int
 }
 
 Table tags {
@@ -74,10 +91,12 @@ Table discounts {
 
 Table reviews {
   id int [pk]
+  headline varchar
   rating tinyint
   comment varchar
-  user_id int
+  customer_id int
   product_id int
+  last_updated bigint
 }
 
 Table option_types { //[{id: 1, name: size}, {id: 2, name: color}, {id: 3, name: feature}]
@@ -85,9 +104,11 @@ Table option_types { //[{id: 1, name: size}, {id: 2, name: color}, {id: 3, name:
   name varchar
 }
 
-Table options {
+Table option_values {
   id tinyint [pk]
   option_type_id tinyint
+  name varchar
+  value varchar
 }
 
 Table attribute_types {
@@ -95,14 +116,16 @@ Table attribute_types {
   name varchar
 }
 
-Table attributes {
+Table attribute_values {
   id tinyint [pk]
-  name varchar
+  value varchar
+  attribute_type_id int
 }
 
 Table product_variants {
   id int [pk]
-  sku varchar
+  sku varchar [note: 'auto create from option values']
+  options json [note: 'array']
 }
 
 Table wish_lists {
@@ -119,7 +142,7 @@ Table wish_list_items {
 
 Table shopping_carts {
   id int [pk]
-  user_id int [null]
+  customer_id int [null]
   session_id varchar
 }
 
@@ -133,7 +156,6 @@ Table shopping_cart_items {
 Table product_categories {
   id int [pk]
   name varchar
-  price float
   product_id int
   category_id int
 }
@@ -147,14 +169,17 @@ Table product_tags {
 Table product_inventories {
   id int [pk]
   product_variant_id int
+  stock int
+  price float
 }
 
 //related to orders
 Table orders {
   id int [pk]
-  user_id int
+  customer_id int
   payment_id int
   shipping_detail_id int
+  order_time bigint
 }
 
 Table order_items {
@@ -163,6 +188,7 @@ Table order_items {
   product_variant_id int
   quantity int
   price float
+  sub_total float //!check again
 }
 
 Table payments {
@@ -183,7 +209,10 @@ Table addresses {
 
 Table shipping_details {
   id int [pk]
-  user_id int
+  customer_id int
+  first_name varchar
+  last_name varchar
+  phone_no varchar
   address_id int
 }
 
@@ -196,10 +225,13 @@ Table sessions {
 }
 
 ref: users.address_id - addresses.id
-
+// ref: users.avatar - images.id
 ref: user_roles.username < users.username
 ref: user_roles.role_id < roles.id
 
+ref: customers.username - users.username
+
+// ref: brands.logo - images.id
 ref: categories.collection_id > collections.id
 ref: categories.parent_id < categories.id
 
@@ -218,18 +250,19 @@ ref: wish_lists.user_id - users.id
 ref: wish_list_items.wish_list_id > wish_lists.id
 ref: wish_list_items.product_id > products.id
 
-ref: shopping_carts.user_id - users.id
+ref: shopping_carts.customer_id - customers.id
 ref: shopping_carts.session_id - sessions.id
 
 ref: shopping_cart_items.cart_id > shopping_carts.id
 ref: shopping_cart_items.product_variant_id > product_variants.id
 
-ref: options.option_type_id > option_types.id
+ref: option_values.option_type_id > option_types.id
+ref: attribute_values.attribute_type_id > attribute_types.id
 
-ref: reviews.user_id > users.id
+ref: reviews.customer_id > customers.id
 ref: reviews.product_id > products.id
 
-ref: orders.user_id > users.id
+ref: orders.customer_id > customers.id
 ref: orders.payment_id - payments.id
 ref: orders.shipping_detail_id > shipping_details.id
 
@@ -238,10 +271,10 @@ ref: order_items.product_variant_id > product_variants.id
 
 ref: payments.method_id > payment_methods.id
 
-ref: shipping_details.user_id > users.id
+ref: shipping_details.customer_id > customers.id
 ref: shipping_details.address_id - addresses.id
 
-ref: images.domain_id > products.id
-ref: images.domain_id - users.id
-ref: images.domain_id - brands.id
+ref: images.model_id > products.id
+ref: images.model_id - users.id
+ref: images.model_id - brands.id
 
