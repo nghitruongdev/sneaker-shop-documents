@@ -1,0 +1,235 @@
+Table users {
+  id [pk]
+  username varchar
+  password varchar
+  email varchar
+  phone_no varchar
+
+  address_id int
+}
+
+Table roles {
+  id int [pk]
+  name varchar
+  desc varchar
+}
+
+Table user_roles {
+  id int [pk]
+  username varchar
+  role_id int
+}
+
+// related to products
+Table brands {
+  id int [pk]
+  name varchar
+}
+
+Table collections {
+  id int [pk]
+  name varchar
+}
+
+Table categories {
+  id int [pk]
+  parent_id int
+  collection_id int
+  name varchar
+}
+
+Table products {
+  id int [pk]
+  brand_id int
+  discount_id int
+}
+
+Table images {
+  id int [pk]
+  dtype varchar
+  domain_id int
+}
+
+Table tags {
+  id int [pk]
+  text varchar
+  color varchar
+}
+
+Table discounts {
+  id int [pk]
+  code varchar
+  name varchar
+  desc varchar
+  last_updated bigint
+  start_time bigint
+  end_time bigint
+}
+
+Table reviews {
+  id int [pk]
+  rating tinyint
+  comment varchar
+  user_id int
+  product_id int
+}
+
+Table option_types {
+  id tinyint [pk]
+  name varchar
+}
+
+Table options {
+  id tinyint [pk]
+  option_type_id tinyint
+}
+
+Table attribute_types {
+  id tinyint [pk]
+  name varchar
+}
+
+Table attributes {
+  id tinyint [pk]
+  name varchar
+}
+
+Table product_variants {
+  id int [pk]
+  sku varchar
+}
+
+Table wish_lists {
+  id int [pk]
+  user_id int
+}
+
+Table wish_list_items {
+  id int [pk]
+  wish_list_id int
+  product_id int
+}
+
+Table shopping_carts {
+  id int [pk]
+  user_id int [null]
+  session_id varchar
+}
+
+Table shopping_cart_items {
+  id int [pk]
+  cart_id int
+  product_variant_id int
+}
+
+Table product_categories {
+  id int [pk]
+  product_id int
+  category_id int
+}
+
+Table product_tags {
+  id int [pk]
+  product_id int
+  tag_id int
+}
+
+Table product_inventories {
+  id int [pk]
+  product_variant_id int
+}
+
+//related to orders
+Table orders {
+  id int [pk]
+  user_id int
+  payment_id int
+  shipping_detail_id int
+}
+
+Table order_items {
+  id int [pk]
+  order_id int
+  product_variant_id int
+  quantity int
+}
+
+Table payments {
+  id int [pk]
+  method_id int
+}
+
+Table payment_methods {
+  id int [pk]
+  name varchar
+  desc varchar
+}
+
+Table addresses {
+  id int [pk]
+}
+
+Table shipping_details {
+  id int [pk]
+  user_id int
+  address_id int
+}
+
+Table sessions {
+  id varchar [pk]
+  ip_address varchar(16)
+  user_agent varchar(50)
+  last_activity int(10)
+  user_data text
+}
+
+ref: users.address_id - addresses.id
+
+ref: user_roles.username < users.username
+ref: user_roles.role_id < roles.id
+
+ref: categories.collection_id > collections.id
+ref: categories.parent_id < categories.id
+
+ref: products.brand_id > brands.id
+ref: products.discount_id > discounts.id
+
+ref: product_inventories.product_variant_id - product_variants.id
+ref: product_categories.product_id < products.id
+ref: product_categories.category_id < categories.id
+
+ref: product_tags.product_id < products.id
+ref: product_tags.tag_id < categories.id
+
+ref: wish_lists.user_id - users.id
+
+ref: wish_list_items.wish_list_id > wish_lists.id
+ref: wish_list_items.product_id > products.id
+
+ref: shopping_carts.user_id - users.id
+ref: shopping_carts.session_id - sessions.id
+
+ref: shopping_cart_items.cart_id > shopping_carts.id
+ref: shopping_cart_items.product_variant_id > product_variants.id
+
+ref: options.option_type_id > option_types.id
+
+ref: reviews.user_id > users.id
+ref: reviews.product_id > products.id
+
+ref: orders.user_id > users.id
+ref: orders.payment_id - payments.id
+ref: orders.shipping_detail_id > shipping_details.id
+
+ref: order_items.order_id > orders.id
+ref: order_items.product_variant_id > product_variants.id
+
+ref: payments.method_id > payment_methods.id
+
+ref: shipping_details.user_id > users.id
+ref: shipping_details.address_id - addresses.id
+
+ref: images.domain_id > products.id
+ref: images.domain_id - users.id
+ref: images.domain_id - brands.id
+
