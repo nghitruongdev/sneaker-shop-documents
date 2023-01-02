@@ -17,6 +17,7 @@ Table roles {
 Table user_roles {
   id int [pk]
   username varchar
+  name varchar
   role_id int
 }
 
@@ -24,6 +25,7 @@ Table user_roles {
 Table brands {
   id int [pk]
   name varchar
+  product_id int
 }
 
 Table collections {
@@ -40,12 +42,16 @@ Table categories {
 
 Table products {
   id int [pk]
+  name varchar
+  volume int
+  price float
   brand_id int
   discount_id int
 }
 
 Table images {
   id int [pk]
+  name varchar
   dtype varchar
   domain_id int
 }
@@ -74,7 +80,7 @@ Table reviews {
   product_id int
 }
 
-Table option_types {
+Table option_types { //[{id: 1, name: size}, {id: 2, name: color}, {id: 3, name: feature}]
   id tinyint [pk]
   name varchar
 }
@@ -101,6 +107,7 @@ Table product_variants {
 
 Table wish_lists {
   id int [pk]
+  product_id int
   user_id int
 }
 
@@ -119,11 +126,14 @@ Table shopping_carts {
 Table shopping_cart_items {
   id int [pk]
   cart_id int
+  price float
   product_variant_id int
 }
 
 Table product_categories {
   id int [pk]
+  name varchar
+  price float
   product_id int
   category_id int
 }
@@ -152,6 +162,7 @@ Table order_items {
   order_id int
   product_variant_id int
   quantity int
+  price float
 }
 
 Table payments {
@@ -167,6 +178,7 @@ Table payment_methods {
 
 Table addresses {
   id int [pk]
+  name varchar
 }
 
 Table shipping_details {
