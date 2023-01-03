@@ -1,0 +1,24 @@
+// Table "vendure"."job_record" {
+//   "createdAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+//   "updatedAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+//   "queueName" VARCHAR(255) [not null]
+//   "data" TEXT [default: NULL]
+//   "state" VARCHAR(255) [not null]
+//   "progress" INT [not null]
+//   "result" TEXT [default: NULL]
+//   "error" VARCHAR(255) [default: NULL]
+//   "startedAt" DATETIME(6) [default: NULL]
+//   "settledAt" DATETIME(6) [default: NULL]
+//   "isSettled" TINYINT [not null]
+//   "retries" INT [not null]
+//   "attempts" INT [not null]
+//   "id" INT [pk, not null, increment]
+// }
+
+// Table "vendure"."job_record_buffer" {
+//   "createdAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+//   "updatedAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+//   "bufferId" VARCHAR(255) [not null]
+//   "job" TEXT [not null]
+//   "id" INT [pk, not null, increment]
+// }

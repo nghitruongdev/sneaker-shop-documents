@@ -1,0 +1,194 @@
+// Table "vendure"."customer_channels_channel" {
+//   "customerId" INT [not null]
+//   "channelId" INT [not null]
+
+// Indexes {
+//   customerId [name: "IDX_a842c9fe8cd4c8ff31402d172d"]
+//   channelId [name: "IDX_dc9f69207a8867f83b0fd257e3"]
+//   (customerId, channelId) [pk]
+// }
+// }
+
+// Ref:"vendure"."customer"."id" < "vendure"."customer_channels_channel"."customerId" [update: cascade, delete: cascade]
+
+// Ref:"vendure"."channel"."id" < "vendure"."customer_channels_channel"."channelId" [update: cascade, delete: cascade]
+
+// Table "vendure"."facet_channels_channel" {
+//   "facetId" INT [not null]
+//   "channelId" INT [not null]
+
+// Indexes {
+//   facetId [name: "IDX_ca796020c6d097e251e5d6d2b0"]
+//   channelId [name: "IDX_2a8ea404d05bf682516184db7d"]
+//   (facetId, channelId) [pk]
+// }
+// }
+
+Ref:"vendure"."channel"."id" < "vendure"."facet_channels_channel"."channelId" [update: cascade, delete: cascade]
+
+Ref:"vendure"."facet"."id" < "vendure"."facet_channels_channel"."facetId" [update: cascade, delete: cascade]
+
+Ref:"vendure"."facet_value"."id" < "vendure"."facet_value_channels_channel"."facetValueId" [update: cascade, delete: cascade]
+
+Ref:"vendure"."channel"."id" < "vendure"."facet_value_channels_channel"."channelId" [update: cascade, delete: cascade]
+
+// Table "vendure"."facet_value_channels_channel" {
+//   "facetValueId" INT [not null]
+//   "channelId" INT [not null]
+
+// Indexes {
+//   facetValueId [name: "IDX_ad690c1b05596d7f52e52ffeed"]
+//   channelId [name: "IDX_e1d54c0b9db3e2eb17faaf5919"]
+//   (facetValueId, channelId) [pk]
+// }
+// }
+
+// Table "vendure"."order_channels_channel" {
+//   "orderId" INT [not null]
+//   "channelId" INT [not null]
+
+// Indexes {
+//   orderId [name: "IDX_0d8e5c204480204a60e151e485"]
+//   channelId [name: "IDX_d0d16db872499e83b15999f8c7"]
+//   (orderId, channelId) [pk]
+// }
+// }
+
+
+// Ref:"vendure"."order"."id" < "vendure"."order_channels_channel"."orderId" [update: cascade, delete: cascade]
+
+// Ref:"vendure"."channel"."id" < "vendure"."order_channels_channel"."channelId" [update: cascade, delete: cascade]
+
+// Table "vendure"."payment_method_channels_channel" {
+//   "paymentMethodId" INT [not null]
+//   "channelId" INT [not null]
+
+// Indexes {
+//   paymentMethodId [name: "IDX_5bcb569635ce5407eb3f264487"]
+//   channelId [name: "IDX_c00e36f667d35031087b382e61"]
+//   (paymentMethodId, channelId) [pk]
+// }
+// }
+
+// Ref:"vendure"."payment_method"."id" < "vendure"."payment_method_channels_channel"."paymentMethodId" [update: cascade, delete: cascade]
+
+// Ref:"vendure"."channel"."id" < "vendure"."payment_method_channels_channel"."channelId" [update: cascade, delete: cascade]
+
+// Table "vendure"."product_channels_channel" {
+//   "productId" INT [not null]
+//   "channelId" INT [not null]
+
+// Indexes {
+//   productId [name: "IDX_26d12be3b5fec6c4adb1d79284"]
+//   channelId [name: "IDX_a51dfbd87c330c075c39832b6e"]
+//   (productId, channelId) [pk]
+// }
+// }
+
+// Ref:"vendure"."product"."id" < "vendure"."product_channels_channel"."productId" [update: cascade, delete: cascade]
+
+// Ref:"vendure"."channel"."id" < "vendure"."product_channels_channel"."channelId" [update: cascade, delete: cascade]
+
+
+// Table "vendure"."asset_channels_channel" {
+//   "assetId" INT [not null]
+//   "channelId" INT [not null]
+
+// Indexes {
+//   assetId [name: "IDX_dc4e7435f9f5e9e6436bebd33b"]
+//   channelId [name: "IDX_16ca9151a5153f1169da5b7b7e"]
+//   (assetId, channelId) [pk]
+// }
+// }
+
+// Ref:"vendure"."asset"."id" < "vendure"."asset_channels_channel"."assetId" [update: cascade, delete: cascade]
+// Ref:"vendure"."channel"."id" < "vendure"."asset_channels_channel"."channelId" [update: cascade, delete: cascade]
+
+// Table "vendure"."channel" {
+//   "createdAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+//   "updatedAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+//   "code" VARCHAR(255) [not null]
+//   "token" VARCHAR(255) [not null]
+//   "defaultLanguageCode" VARCHAR(255) [not null]
+//   "currencyCode" VARCHAR(255) [not null]
+//   "pricesIncludeTax" TINYINT [not null]
+//   "id" INT [pk, not null, increment]
+//   "defaultTaxZoneId" INT [default: NULL]
+//   "defaultShippingZoneId" INT [default: NULL]
+
+// Indexes {
+//   code [unique, name: "IDX_06127ac6c6d913f4320759971d"]
+//   token [unique, name: "IDX_842699fce4f3470a7d06d89de8"]
+//   defaultTaxZoneId [name:]
+//   defaultShippingZoneId [name:]
+// }
+// }
+
+// Table "vendure"."role_channels_channel" {
+//   "roleId" INT [not null]
+//   "channelId" INT [not null]
+
+// Indexes {
+//   roleId [name: "IDX_bfd2a03e9988eda6a9d1176011"]
+//   channelId [name: "IDX_e09dfee62b158307404202b43a"]
+//   (roleId, channelId) [pk]
+// }
+// }
+
+// Ref:"vendure"."role"."id" < "vendure"."role_channels_channel"."roleId" [update: cascade, delete: cascade]
+
+// Ref:"vendure"."channel"."id" < "vendure"."role_channels_channel"."channelId" [update: cascade, delete: cascade]
+
+// Table "vendure"."promotion_channels_channel" {
+//   "promotionId" INT [not null]
+//   "channelId" INT [not null]
+
+// Indexes {
+//   promotionId [name: "IDX_6d9e2c39ab12391aaa374bcdaa"]
+//   channelId [name: "IDX_0eaaf0f4b6c69afde1e88ffb52"]
+//   (promotionId, channelId) [pk]
+// }
+// }
+
+// Table "vendure"."product_variant_channels_channel" {
+//   "productVariantId" INT [not null]
+//   "channelId" INT [not null]
+
+// Indexes {
+//   productVariantId
+//   channelId
+//   (productVariantId, channelId) [pk]
+// }
+// }
+
+Ref:"vendure"."product_variant"."id" < "vendure"."product_variant_channels_channel"."productVariantId" [update: cascade, delete: cascade]
+
+Ref:"vendure"."channel"."id" < "vendure"."product_variant_channels_channel"."channelId" [update: cascade, delete: cascade]
+
+// Table "vendure"."collection_channels_channel" {
+//   "collectionId" INT [not null]
+//   "channelId" INT [not null]
+
+// Indexes {
+//   collectionId
+//   channelId
+//   (collectionId, channelId) [pk]
+// }
+// }
+
+// Ref:"vendure"."channel"."id" < "vendure"."promotion_channels_channel"."channelId" [update: cascade, delete: cascade]
+
+// Ref:"vendure"."promotion"."id" < "vendure"."promotion_channels_channel"."promotionId" [update: cascade, delete: cascade]
+
+// Ref:"vendure"."zone"."id" < "vendure"."channel"."defaultTaxZoneId"
+
+// Ref:"vendure"."zone"."id" < "vendure"."channel"."defaultShippingZoneId"
+
+// Ref:"vendure"."channel"."id" < "vendure"."collection_channels_channel"."channelId" [update: cascade, delete: cascade]
+
+// Ref:"vendure"."collection"."id" < "vendure"."collection_channels_channel"."collectionId" [update: cascade, delete: cascade]
+
+// Ref:"vendure"."shipping_method"."id" < "vendure"."shipping_method_channels_channel"."shippingMethodId" [update: cascade, delete: cascade]
+
+// Ref:"vendure"."channel"."id" < "vendure"."shipping_method_channels_channel"."channelId" [update: cascade, delete: cascade]
+

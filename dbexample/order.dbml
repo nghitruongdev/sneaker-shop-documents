@@ -1,0 +1,242 @@
+Table "vendure"."order" {
+  "createdAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+  "updatedAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+  "code" VARCHAR(255) [not null]
+  "state" VARCHAR(255) [not null]
+  "active" TINYINT [not null, default: "1"]
+  "orderPlacedAt" DATETIME [default: NULL]
+  "couponCodes" TEXT [not null]
+  "shippingAddress" TEXT [not null]
+  "billingAddress" TEXT [not null]
+  "currencyCode" VARCHAR(255) [not null]
+  "subTotal" INT [not null]
+  "subTotalWithTax" INT [not null]
+  "shipping" INT [not null, default: "0"]
+  "shippingWithTax" INT [not null, default: "0"]
+  "id" INT [pk, not null, increment]
+  "taxZoneId" INT [default: NULL]
+  "customerId" INT [default: NULL]
+
+Indexes {
+  customerId [name:]
+}
+}
+
+Table "vendure"."fulfillment" {
+  "createdAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+  "updatedAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+  "state" VARCHAR(255) [not null]
+  "trackingCode" VARCHAR(255) [not null, default: ""]
+  "method" VARCHAR(255) [not null]
+  "handlerCode" VARCHAR(255) [not null]
+  "id" INT [pk, not null, increment]
+}
+
+Table "vendure"."refund" {
+  "createdAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+  "updatedAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+  "items" INT [not null]
+  "shipping" INT [not null]
+  "adjustment" INT [not null]
+  "total" INT [not null]
+  "method" VARCHAR(255) [not null]
+  "reason" VARCHAR(255) [default: NULL]
+  "state" VARCHAR(255) [not null]
+  "transactionId" VARCHAR(255) [default: NULL]
+  "metadata" TEXT [not null]
+  "id" INT [pk, not null, increment]
+  "paymentId" INT [not null]
+
+Indexes {
+  paymentId [name:]
+}
+}
+
+Table "vendure"."order_line" {
+  "createdAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+  "updatedAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+  "id" INT [pk, not null, increment]
+  "productVariantId" INT [default: NULL]
+  "taxCategoryId" INT [default: NULL]
+  "featuredAssetId" INT [default: NULL]
+  "orderId" INT [default: NULL]
+
+Indexes {
+  productVariantId [name:]
+  taxCategoryId [name:]
+  featuredAssetId [name:]
+  orderId [name:]
+}
+}
+
+Table "vendure"."order_item_fulfillments_fulfillment" {
+  "orderItemId" INT [not null]
+  "fulfillmentId" INT [not null]
+
+Indexes {
+  orderItemId [name: "IDX_a568a3d5aa7f237edab624960b"]
+  fulfillmentId [name: "IDX_8132041a647c28eb27ecc1691f"]
+  (orderItemId, fulfillmentId) [pk]
+}
+}
+
+Table "vendure"."order_item" {
+  "createdAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+  "updatedAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+  "initialListPrice" INT [default: NULL]
+  "listPrice" INT [not null]
+  "listPriceIncludesTax" TINYINT [not null]
+  "adjustments" TEXT [not null]
+  "taxLines" TEXT [not null]
+  "cancelled" TINYINT [not null, default: "0"]
+  "id" INT [pk, not null, increment]
+  "lineId" INT [not null]
+  "refundId" INT [default: NULL]
+
+Indexes {
+  lineId [name:]
+  refundId [name:]
+}
+}
+
+
+Table "vendure"."order_modification" {
+  "createdAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+  "updatedAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+  "note" VARCHAR(255) [not null]
+  "priceChange" INT [not null]
+  "shippingAddressChange" TEXT [default: NULL]
+  "billingAddressChange" TEXT [default: NULL]
+  "id" INT [pk, not null, increment]
+  "orderId" INT [default: NULL]
+  "paymentId" INT [default: NULL]
+  "refundId" INT [default: NULL]
+
+Indexes {
+  paymentId [unique, name: "REL_ad2991fa2933ed8b7f86a71633"]
+  refundId [unique, name: "REL_cb66b63b6e97613013795eadbd"]
+  orderId [name:]
+}
+}
+
+Table "vendure"."order_modification_order_items_order_item" {
+  "orderModificationId" INT [not null]
+  "orderItemId" INT [not null]
+
+Indexes {
+  orderModificationId [name: "IDX_a48502a38aded69d087a8ec08a"]
+  orderItemId [name: "IDX_9d631d7bd3d44af50eca535d72"]
+  (orderModificationId, orderItemId) [pk]
+}
+}
+
+Table "vendure"."promotion" {
+  "createdAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+  "updatedAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+  "deletedAt" DATETIME [default: NULL]
+  "startsAt" DATETIME [default: NULL]
+  "endsAt" DATETIME [default: NULL]
+  "couponCode" VARCHAR(255) [default: NULL]
+  "perCustomerUsageLimit" INT [default: NULL]
+  "name" VARCHAR(255) [not null]
+  "enabled" TINYINT [not null]
+  "conditions" TEXT [not null]
+  "actions" TEXT [not null]
+  "priorityScore" INT [not null]
+  "id" INT [pk, not null, increment]
+}
+
+Table "vendure"."order_promotions_promotion" {
+  "orderId" INT [not null]
+  "promotionId" INT [not null]
+
+Indexes {
+  orderId [name: "IDX_67be0e40122ab30a62a9817efe"]
+  promotionId [name: "IDX_2c26b988769c0e3b0120bdef31"]
+  (orderId, promotionId) [pk]
+}
+}
+
+Table "vendure"."surcharge" {
+  "createdAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+  "updatedAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+  "description" VARCHAR(255) [not null]
+  "listPrice" INT [not null]
+  "listPriceIncludesTax" TINYINT [not null]
+  "sku" VARCHAR(255) [not null]
+  "taxLines" TEXT [not null]
+  "id" INT [pk, not null, increment]
+  "orderId" INT [default: NULL]
+  "orderModificationId" INT [default: NULL]
+
+Indexes {
+  orderId [name:]
+  orderModificationId [name:]
+}
+}
+
+Table "stock_movement" {
+  "createdAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+  "updatedAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+  "type" VARCHAR(255) [not null]
+  "quantity" INT [not null]
+  "id" INT [pk, not null, increment]
+  "discriminator" VARCHAR(255) [not null]
+  "productVariantId" INT [default: NULL]
+  "orderItemId" INT [default: NULL]
+  "orderLineId" INT [default: NULL]
+
+Indexes {
+  discriminator
+  productVariantId
+  orderItemId
+  orderLineId
+}
+}
+
+Ref:"product_variant"."id" < "stock_movement"."productVariantId"
+
+Ref:"vendure"."order_item"."id" < "vendure"."stock_movement"."orderItemId"
+
+Ref:"vendure"."order_line"."id" < "vendure"."stock_movement"."orderLineId"
+
+Ref:"vendure"."order"."id" < "vendure"."surcharge"."orderId" [delete: cascade]
+
+Ref:"vendure"."order_modification"."id" < "vendure"."surcharge"."orderModificationId"
+
+Ref:"vendure"."customer"."id" < "vendure"."order"."customerId"
+
+Ref:"vendure"."order"."id" < "vendure"."history_entry"."orderId" [delete: cascade]
+
+Ref:"vendure"."promotion"."id" < "vendure"."order_promotions_promotion"."promotionId" [update: cascade, delete: cascade]
+
+Ref:"vendure"."order"."id" < "vendure"."order_promotions_promotion"."orderId" [update: cascade, delete: cascade]
+
+Ref:"vendure"."order_item"."id" < "vendure"."order_modification_order_items_order_item"."orderItemId" [update: cascade, delete: cascade]
+
+Ref:"vendure"."order_modification"."id" < "vendure"."order_modification_order_items_order_item"."orderModificationId" [update: cascade, delete: cascade]
+
+
+Ref:"vendure"."order"."id" < "vendure"."order_modification"."orderId" [delete: cascade]
+
+Ref:"vendure"."payment"."id" < "vendure"."order_modification"."paymentId"
+
+Ref:"vendure"."refund"."id" < "vendure"."order_modification"."refundId"
+
+
+Ref:"vendure"."refund"."id" < "vendure"."order_item"."refundId"
+
+Ref:"vendure"."order_line"."id" < "vendure"."order_item"."lineId" [delete: cascade]
+
+Ref:"vendure"."fulfillment"."id" < "vendure"."order_item_fulfillments_fulfillment"."fulfillmentId"
+
+Ref:"vendure"."order_item"."id" < "vendure"."order_item_fulfillments_fulfillment"."orderItemId" [update: cascade, delete: cascade]
+
+Ref:"vendure"."order"."id" < "vendure"."order_line"."orderId" [delete: cascade]
+
+Ref:"vendure"."tax_category"."id" < "vendure"."order_line"."taxCategoryId"
+
+Ref:"vendure"."asset"."id" < "vendure"."order_line"."featuredAssetId"
+
+Ref:"vendure"."product_variant"."id" < "vendure"."order_line"."productVariantId"
+Ref:"vendure"."payment"."id" < "vendure"."refund"."paymentId"

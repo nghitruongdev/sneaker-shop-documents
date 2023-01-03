@@ -1,0 +1,36 @@
+// Table "vendure"."zone" {
+//   "createdAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+//   "updatedAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+//   "name" VARCHAR(255) [not null]
+//   "id" INT [pk, not null, increment]
+// }
+
+// Table "vendure"."country" {
+//   "createdAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+//   "updatedAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+//   "code" VARCHAR(255) [not null]
+//   "enabled" TINYINT [not null]
+//   "id" INT [pk, not null, increment]
+// }
+
+// Table "vendure"."migrations" {
+//   "id" INT [pk, not null, increment]
+//   "timestamp" BIGINT [not null]
+//   "name" VARCHAR(255) [not null]
+// }
+
+// Table "vendure"."zone_members_country" {
+//   "zoneId" INT [not null]
+//   "countryId" INT [not null]
+
+// Indexes {
+//   zoneId [name: "IDX_7350d77b6474313fbbaf4b094c"]
+//   countryId [name: "IDX_7baeecaf955e54bec73f998b0d"]
+//   (zoneId, countryId) [pk]
+// }
+// }
+
+
+// Ref:"vendure"."zone"."id" < "vendure"."zone_members_country"."zoneId" [update: cascade, delete: cascade]
+
+// Ref:"vendure"."country"."id" < "vendure"."zone_members_country"."countryId" [update: cascade, delete: cascade]

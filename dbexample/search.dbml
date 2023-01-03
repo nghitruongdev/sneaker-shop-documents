@@ -1,0 +1,31 @@
+Table "vendure"."search_index_item" {
+  "languageCode" VARCHAR(255) [not null]
+  "enabled" TINYINT [not null]
+  "productName" VARCHAR(255) [not null]
+  "productVariantName" VARCHAR(255) [not null]
+  "description" TEXT [not null]
+  "slug" VARCHAR(255) [not null]
+  "sku" VARCHAR(255) [not null]
+  "price" INT [not null]
+  "priceWithTax" INT [not null]
+  "facetIds" TEXT [not null]
+  "facetValueIds" TEXT [not null]
+  "collectionIds" TEXT [not null]
+  "collectionSlugs" TEXT [not null]
+  "channelIds" TEXT [not null]
+  "productPreview" VARCHAR(255) [not null]
+  "productPreviewFocalPoint" TEXT [default: NULL]
+  "productVariantPreview" VARCHAR(255) [not null]
+  "productVariantPreviewFocalPoint" TEXT [default: NULL]
+  "inStock" TINYINT [not null, default: "1"]
+  "productInStock" TINYINT [not null, default: "1"]
+  "productVariantId" INT [not null]
+  "channelId" INT [not null]
+  "productId" INT [not null]
+  "productAssetId" INT [default: NULL]
+  "productVariantAssetId" INT [default: NULL]
+
+Indexes {
+  (languageCode, productVariantId, channelId) [pk]
+}
+}

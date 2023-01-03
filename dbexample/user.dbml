@@ -1,0 +1,174 @@
+Table "user" {
+  "createdAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+  "updatedAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+  "deletedAt" DATETIME [default: NULL]
+  "identifier" VARCHAR(255) [not null]
+  "verified" TINYINT [not null, default: "0"]
+  "lastLogin" DATETIME [default: NULL]
+  "id" INT [pk, not null, increment]
+}
+
+Table "customer" {
+  "createdAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+  "updatedAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+  "deletedAt" DATETIME [default: NULL]
+  "title" VARCHAR(255) [default: NULL]
+  "firstName" VARCHAR(255) [not null]
+  "lastName" VARCHAR(255) [not null]
+  "phoneNumber" VARCHAR(255) [default: NULL]
+  "emailAddress" VARCHAR(255) [not null]
+  "id" INT [pk, not null, increment]
+  "userId" INT [default: NULL]
+
+Indexes {
+  userId [unique, name: "REL_3f62b42ed23958b120c235f74d"]
+}
+}
+
+Table "address" {
+  "createdAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+  "updatedAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+  "fullName" VARCHAR(255) [not null, default: ""]
+  "company" VARCHAR(255) [not null, default: ""]
+  "streetLine1" VARCHAR(255) [not null]
+  "streetLine2" VARCHAR(255) [not null, default: ""]
+  "city" VARCHAR(255) [not null, default: ""]
+  "province" VARCHAR(255) [not null, default: ""]
+  "postalCode" VARCHAR(255) [not null, default: ""]
+  "phoneNumber" VARCHAR(255) [not null, default: ""]
+  "defaultShippingAddress" TINYINT [not null, default: "0"]
+  "defaultBillingAddress" TINYINT [not null, default: "0"]
+  "id" INT [pk, not null, increment]
+  "customerId" INT [default: NULL]
+  "countryId" INT [default: NULL]
+
+Indexes {
+  customerId
+  countryId
+}
+}
+
+Table "administrator" {
+  "createdAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+  "updatedAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+  "deletedAt" DATETIME [default: NULL]
+  "firstName" VARCHAR(255) [not null]
+  "lastName" VARCHAR(255) [not null]
+  "emailAddress" VARCHAR(255) [not null]
+  "id" INT [pk, not null, increment]
+  "userId" INT [default: NULL]
+
+Indexes {
+  emailAddress [unique, name: "IDX_154f5c538b1576ccc277b1ed63"]
+  userId [unique, name: "REL_1966e18ce6a39a82b19204704d"]
+}
+}
+
+Table "role" {
+  "createdAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+  "updatedAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+  "code" VARCHAR(255) [not null]
+  "description" VARCHAR(255) [not null]
+  "permissions" TEXT [not null]
+  "id" INT [pk, not null, increment]
+}
+
+Table "authentication_method" {
+  "createdAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+  "updatedAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+  "identifier" VARCHAR(255) [default: NULL]
+  "passwordHash" VARCHAR(255) [default: NULL]
+  "verificationToken" VARCHAR(255) [default: NULL]
+  "passwordResetToken" VARCHAR(255) [default: NULL]
+  "identifierChangeToken" VARCHAR(255) [default: NULL]
+  "pendingIdentifier" VARCHAR(255) [default: NULL]
+  "strategy" VARCHAR(255) [default: NULL]
+  "externalIdentifier" VARCHAR(255) [default: NULL]
+  "metadata" TEXT [default: NULL]
+  "id" INT [pk, not null, increment]
+  "type" VARCHAR(255) [not null]
+  "userId" INT [default: NULL]
+
+Indexes {
+  type
+  userId
+}
+}
+
+Table "customer_group" {
+  "createdAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+  "updatedAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+  "name" VARCHAR(255) [not null]
+  "id" INT [pk, not null, increment]
+}
+
+Table "history_entry" {
+  "createdAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+  "updatedAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+  "type" VARCHAR(255) [not null]
+  "isPublic" TINYINT [not null]
+  "data" TEXT [not null]
+  "id" INT [pk, not null, increment]
+  "discriminator" VARCHAR(255) [not null]
+  "administratorId" INT [default: NULL]
+  "customerId" INT [default: NULL]
+  "orderId" INT [default: NULL]
+
+Indexes {
+  discriminator
+  administratorId
+  customerId
+  orderId
+}
+}
+
+Ref:"user"."id" < "customer"."userId"
+Ref:"customer"."id" < "address"."customerId"
+// Ref :"country"."id" < "address"."countryId"
+Ref:"user"."id" < "administrator"."userId"
+Ref :"user"."id" < "authentication_method"."userId"
+Ref :"customer"."id" < "history_entry"."customerId" [delete: cascade]
+
+Ref :"administrator"."id" < "history_entry"."administratorId"
+
+Table "user_roles_role" {
+  "userId" INT [not null]
+  "roleId" INT [not null]
+
+Indexes {
+  userId
+  roleId
+  (userId, roleId) [pk]
+}
+}
+
+Ref :"role"."id" < "user_roles_role"."roleId" [update: cascade, delete: cascade]
+Ref :"user"."id" < "user_roles_role"."userId" [update: cascade, delete: cascade]
+
+Table "customer_groups_customer_group" {
+  "customerId" INT [not null]
+  "customerGroupId" INT [not null]
+
+Indexes {
+  customerId
+  customerGroupId
+  (customerId, customerGroupId) [pk]
+}
+}
+
+Ref :"customer_group"."id" < "customer_groups_customer_group"."customerGroupId"
+Ref :"customer"."id" < "customer_groups_customer_group"."customerId" [update: cascade, delete: cascade]
+
+TableGroup "user_group"{
+  "user"
+  "role"
+  "customer"
+  "administrator"
+  "address"
+  "history_entry"
+  "user_roles_role"
+  "authentication_method"
+  "customer_group"
+  "customer_groups_customer_group"
+
+}

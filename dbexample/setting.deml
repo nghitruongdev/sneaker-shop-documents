@@ -1,0 +1,8 @@
+// Table "vendure"."global_settings" {
+//   "createdAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+//   "updatedAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+//   "availableLanguages" TEXT [not null]
+//   "trackInventory" TINYINT [not null, default: "1"]
+//   "outOfStockThreshold" INT [not null, default: "0"]
+//   "id" INT [pk, not null, increment]
+// }

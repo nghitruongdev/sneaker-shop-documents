@@ -1,0 +1,33 @@
+Table "vendure"."user" {
+  "id" INT [pk, not null, increment]
+}
+
+//---
+
+Table "vendure"."session" {
+  "createdAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+  "updatedAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+  "token" VARCHAR(255) [not null]
+  "expires" DATETIME [not null]
+  "invalidated" TINYINT [not null]
+  "authenticationStrategy" VARCHAR(255) [default: NULL]
+  "id" INT [pk, not null, increment]
+  "activeOrderId" INT [default: NULL]
+  "activeChannelId" INT [default: NULL]
+  "type" VARCHAR(255) [not null]
+  "userId" INT [default: NULL]
+
+Indexes {
+  token [unique, name: "IDX_232f8e85d7633bd6ddfad42169"]
+  type [name: "IDX_e5598363000cab9d9116bd5835"]
+  activeOrderId [name:]
+  activeChannelId [name:]
+  userId [name:]
+}
+}
+
+Ref:"vendure"."user"."id" < "vendure"."session"."userId"
+
+Ref:"vendure"."order"."id" < "vendure"."session"."activeOrderId"
+
+// Ref:"vendure"."channel"."id" < "vendure"."session"."activeChannelId"

@@ -1,0 +1,306 @@
+Table "product" {
+  "createdAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+  "updatedAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+  "deletedAt" DATETIME [default: NULL]
+  "enabled" TINYINT [not null, default: "1"]
+  "id" INT [pk, not null, increment]
+  "featuredAssetId" INT [default: NULL]
+
+  Indexes {
+    featuredAssetId
+  }
+}
+
+Table "product_variant" {
+  "createdAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+  "updatedAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+  "deletedAt" DATETIME [default: NULL]
+  "enabled" TINYINT [not null, default: "1"]
+  "sku" VARCHAR(255) [not null]
+  "stockOnHand" INT [not null, default: "0"]
+  "stockAllocated" INT [not null, default: "0"]
+  "outOfStockThreshold" INT [not null, default: "0"]
+  "useGlobalOutOfStockThreshold" TINYINT [not null, default: "1"]
+  "trackInventory" VARCHAR(255) [not null, default: "INHERIT"]
+  "id" INT [pk, not null, increment]
+  "productId" INT [default: NULL]
+  "featuredAssetId" INT [default: NULL]
+  "taxCategoryId" INT [default: NULL]
+
+  Indexes {
+    featuredAssetId
+    taxCategoryId
+    productId
+  }
+}
+
+Table "product_variant_price" {
+  "createdAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+  "updatedAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+  "price" INT [not null]
+  "id" INT [pk, not null, increment]
+  "channelId" INT [not null]
+  "variantId" INT [default: NULL]
+
+Indexes {
+  variantId
+}
+}
+
+Table "product_option_group" {
+  "createdAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+  "updatedAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+  "deletedAt" DATETIME [default: NULL]
+  "code" VARCHAR(255) [not null]
+  "id" INT [pk, not null, increment]
+  "productId" INT [default: NULL]
+
+  Indexes {productId}
+}
+
+Table "product_option" {
+  "createdAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+  "updatedAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+  "deletedAt" DATETIME [default: NULL]
+  "code" VARCHAR(255) [not null]
+  "id" INT [pk, not null, increment]
+  "groupId" INT [not null]
+
+  Indexes {groupId}
+}
+
+Table "product_variant_options_product_option" {
+  "productVariantId" INT [not null]
+  "productOptionId" INT [not null]
+
+  Indexes {
+    productVariantId
+    productOptionId
+    (productVariantId, productOptionId) [pk]
+  }
+}
+
+Table "asset" {
+  "createdAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+  "updatedAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+  "name" VARCHAR(255) [not null]
+  "type" VARCHAR(255) [not null]
+  "mimeType" VARCHAR(255) [not null]
+  "width" INT [not null, default: "0"]
+  "height" INT [not null, default: "0"]
+  "fileSize" INT [not null]
+  "source" VARCHAR(255) [not null]
+  "preview" VARCHAR(255) [not null]
+  "focalPoint" TEXT [default: NULL]
+  "id" INT [pk, not null, increment]
+}
+
+Table "product_asset" {
+  "createdAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+  "updatedAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+  "assetId" INT [not null]
+  "position" INT [not null]
+  "productId" INT [not null]
+  "id" INT [pk, not null, increment]
+
+Indexes {
+  assetId
+  productId
+}
+}
+
+Table "product_variant_asset" {
+  "createdAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+  "updatedAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+  "assetId" INT [not null]
+  "position" INT [not null]
+  "productVariantId" INT [not null]
+  "id" INT [pk, not null, increment]
+
+Indexes {
+  assetId
+  productVariantId
+}
+}
+
+Table "collection_asset" {
+  "createdAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+  "updatedAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+  "assetId" INT [not null]
+  "position" INT [not null]
+  "collectionId" INT [not null]
+  "id" INT [pk, not null, increment]
+
+Indexes {
+  assetId
+  collectionId
+}
+}
+
+Table "facet" {
+  "createdAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+  "updatedAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+  "isPrivate" TINYINT [not null, default: "0"]
+  "code" VARCHAR(255) [not null]
+  "id" INT [pk, not null, increment]
+
+Indexes {
+  code [unique]
+}
+}
+
+Table "facet_value" {
+  "createdAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+  "updatedAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+  "code" VARCHAR(255) [not null]
+  "id" INT [pk, not null, increment]
+  "facetId" INT [default: NULL]
+
+Indexes {
+  facetId
+}
+}
+
+Table "product_facet_values_facet_value" {
+  "productId" INT [not null]
+  "facetValueId" INT [not null]
+
+  Indexes {
+    productId
+    facetValueId
+    (productId, facetValueId) [pk]
+  }
+}
+
+Table "product_variant_facet_values_facet_value" {
+  "productVariantId" INT [not null]
+  "facetValueId" INT [not null]
+
+Indexes {
+  productVariantId
+  facetValueId
+  (productVariantId, facetValueId) [pk]
+}
+}
+
+Table "collection" {
+  "createdAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+  "updatedAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+  "isRoot" TINYINT [not null, default: "0"]
+  "position" INT [not null]
+  "isPrivate" TINYINT [not null, default: "0"]
+  "filters" TEXT [not null]
+  "id" INT [pk, not null, increment]
+  "featuredAssetId" INT [default: NULL]
+  "parentId" INT [default: NULL]
+
+Indexes {
+  featuredAssetId
+  parentId
+}
+}
+
+Table "collection_product_variants_product_variant" {
+  "collectionId" INT [not null]
+  "productVariantId" INT [not null]
+
+Indexes {
+  collectionId
+  productVariantId
+  (collectionId, productVariantId) [pk]
+}
+}
+
+Table "tag" {
+  "createdAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+  "updatedAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+  "value" VARCHAR(255) [not null]
+  "id" INT [pk, not null, increment]
+}
+
+
+Table "asset_tags_tag" {
+  "assetId" INT [not null]
+  "tagId" INT [not null]
+
+Indexes {
+  assetId
+  tagId
+  (assetId, tagId) [pk]
+}
+}
+
+Ref:"product"."id" < "product_option_group"."productId"
+Ref:"product"."id" < "product_variant"."productId"
+Ref:"product"."id" < "product_asset"."productId" [delete: cascade]
+Ref:"product"."id" < "product_facet_values_facet_value"."productId" [update: cascade, delete: cascade]
+
+Ref:"product_option_group"."id" < "product_option"."groupId"
+Ref:"product_option"."id" < "product_variant_options_product_option"."productOptionId" [update: cascade, delete: cascade]
+
+Ref:"facet"."id" < "facet_value"."facetId" [delete: cascade]
+Ref:"facet_value"."id" < "product_facet_values_facet_value"."facetValueId" [update: cascade, delete: cascade]
+Ref:"facet_value"."id" < "product_variant_facet_values_facet_value"."facetValueId" [update: cascade, delete: cascade]
+
+Ref:"product_variant"."id" < "collection_product_variants_product_variant"."productVariantId"
+Ref:"product_variant"."id" < "product_variant_facet_values_facet_value"."productVariantId" [update: cascade, delete: cascade]
+Ref:"product_variant"."id" < "product_variant_options_product_option"."productVariantId" [update: cascade, delete: cascade]
+Ref:"product_variant"."id" < "product_variant_asset"."productVariantId" [delete: cascade]
+Ref:"product_variant"."id" < "product_variant_price"."variantId"
+
+Ref:"asset"."id" < "asset_tags_tag"."assetId" [update: cascade, delete: cascade]
+Ref:"asset"."id" < "product"."featuredAssetId" [delete: set null]
+Ref:"asset"."id" < "collection_asset"."assetId" [delete: cascade]
+Ref:"asset"."id" < "product_variant"."featuredAssetId" [delete: set null]
+Ref:"asset"."id" < "collection"."featuredAssetId" [delete: set null]
+Ref:"asset"."id" < "product_variant_asset"."assetId" [delete: cascade]
+Ref:"asset"."id" < "product_asset"."assetId" [delete: cascade]
+
+Ref:"collection"."id" < "collection"."parentId"
+Ref:"collection"."id" < "collection_asset"."collectionId" [delete: cascade]
+Ref:"collection"."id" < "collection_product_variants_product_variant"."collectionId" [update: cascade, delete: cascade]
+
+
+
+
+
+
+Ref:"tag"."id" < "asset_tags_tag"."tagId" [update: cascade, delete: cascade]
+
+// Ref:"tax_category"."id" < "product_variant"."taxCategoryId"
+
+TableGroup option_group {
+  product_option_group
+  product_option
+  product_variant_options_product_option
+}
+
+TableGroup asset_group {
+  asset
+  product_asset
+  product_variant_asset
+  collection_asset
+}
+
+TableGroup facet_group {
+  facet
+  facet_value
+  product_facet_values_facet_value
+  product_variant_facet_values_facet_value
+
+}
+
+TableGroup collection_group {
+  collection
+  collection_product_variants_product_variant
+}
+
+TableGroup variant_group {
+  product_variant
+  product_variant_price
+}
+
+TableGroup tag_group {
+    tag
+    asset_tags_tag
+}

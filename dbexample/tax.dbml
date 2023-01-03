@@ -1,0 +1,31 @@
+Table "vendure"."tax_category" {
+  "createdAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+  "updatedAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+  "name" VARCHAR(255) [not null]
+  "isDefault" TINYINT [not null, default: "0"]
+  "id" INT [pk, not null, increment]
+}
+
+// Table "vendure"."tax_rate" {
+//   "createdAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+//   "updatedAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+//   "name" VARCHAR(255) [not null]
+//   "enabled" TINYINT [not null]
+//   "value" DECIMAL(5,2) [not null]
+//   "id" INT [pk, not null, increment]
+//   "categoryId" INT [default: NULL]
+//   "zoneId" INT [default: NULL]
+//   "customerGroupId" INT [default: NULL]
+
+// Indexes {
+//   categoryId [name:]
+//   zoneId [name:]
+//   customerGroupId [name:]
+// }
+// }
+
+// Ref:"vendure"."tax_category"."id" < "vendure"."tax_rate"."categoryId"
+
+// Ref:"vendure"."customer_group"."id" < "vendure"."tax_rate"."customerGroupId"
+
+// Ref:"vendure"."zone"."id" < "vendure"."tax_rate"."zoneId"

@@ -1,0 +1,30 @@
+Table "vendure"."payment_method" {
+  "createdAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+  "updatedAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+  "name" VARCHAR(255) [not null, default: ""]
+  "code" VARCHAR(255) [not null, default: ""]
+  "description" VARCHAR(255) [not null, default: ""]
+  "enabled" TINYINT [not null]
+  "checker" TEXT [default: NULL]
+  "handler" TEXT [not null]
+  "id" INT [pk, not null, increment]
+}
+
+Table "vendure"."payment" {
+  "createdAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+  "updatedAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+  "method" VARCHAR(255) [not null]
+  "amount" INT [not null]
+  "state" VARCHAR(255) [not null]
+  "errorMessage" VARCHAR(255) [default: NULL]
+  "transactionId" VARCHAR(255) [default: NULL]
+  "metadata" TEXT [not null]
+  "id" INT [pk, not null, increment]
+  "orderId" INT [default: NULL]
+
+Indexes {
+  orderId [name:]
+}
+}
+
+Ref:"vendure"."order"."id" < "vendure"."payment"."orderId"

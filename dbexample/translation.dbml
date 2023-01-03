@@ -1,0 +1,142 @@
+// Table "vendure"."facet_translation" {
+//   "createdAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+//   "updatedAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+//   "languageCode" VARCHAR(255) [not null]
+//   "name" VARCHAR(255) [not null]
+//   "id" INT [pk, not null, increment]
+//   "baseId" INT [default: NULL]
+
+// Indexes {
+//   baseId [name:]
+// }
+// }
+
+
+
+
+
+// Table "vendure"."facet_value_translation" {
+//   "createdAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+//   "updatedAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+//   "languageCode" VARCHAR(255) [not null]
+//   "name" VARCHAR(255) [not null]
+//   "id" INT [pk, not null, increment]
+//   "baseId" INT [default: NULL]
+
+// Indexes {
+//   baseId [name:]
+// }
+// }
+
+// Ref:"vendure"."facet_value"."id" < "vendure"."facet_value_translation"."baseId" [delete: cascade]
+
+
+// Table "vendure"."product_option_group_translation" {
+//   "createdAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+//   "updatedAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+//   "languageCode" VARCHAR(255) [not null]
+//   "name" VARCHAR(255) [not null]
+//   "id" INT [pk, not null, increment]
+//   "baseId" INT [default: NULL]
+
+// Indexes {
+//   baseId [name:]
+// }
+// }
+
+// Table "vendure"."product_option_translation" {
+//   "createdAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+//   "updatedAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+//   "languageCode" VARCHAR(255) [not null]
+//   "name" VARCHAR(255) [not null]
+//   "id" INT [pk, not null, increment]
+//   "baseId" INT [default: NULL]
+
+// Indexes {
+//   baseId [name:]
+// }
+// }
+
+
+// Table "vendure"."product_translation" {
+//   "createdAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+//   "updatedAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+//   "languageCode" VARCHAR(255) [not null]
+//   "name" VARCHAR(255) [not null]
+//   "slug" VARCHAR(255) [not null]
+//   "description" TEXT [not null]
+//   "id" INT [pk, not null, increment]
+//   "baseId" INT [default: NULL]
+
+// Indexes {
+//   baseId [name:]
+// }
+// }
+
+// Table "vendure"."product_variant_translation" {
+//   "createdAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+//   "updatedAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+//   "languageCode" VARCHAR(255) [not null]
+//   "name" VARCHAR(255) [not null]
+//   "id" INT [pk, not null, increment]
+//   "baseId" INT [default: NULL]
+
+// Indexes {
+//   baseId [name:]
+// }
+// }
+
+// Table "vendure"."country_translation" {
+//   "createdAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+//   "updatedAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+//   "languageCode" VARCHAR(255) [not null]
+//   "name" VARCHAR(255) [not null]
+//   "id" INT [pk, not null, increment]
+//   "baseId" INT [default: NULL]
+
+// Indexes {
+//   baseId
+// }
+// }
+
+// Table "vendure"."collection_translation" {
+//   "createdAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+//   "updatedAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+//   "languageCode" VARCHAR(255) [not null]
+//   "name" VARCHAR(255) [not null]
+//   "slug" VARCHAR(255) [not null]
+//   "description" TEXT [not null]
+//   "id" INT [pk, not null, increment]
+//   "baseId" INT [default: NULL]
+
+// Indexes {
+//   baseId
+// }
+// }
+
+
+// Table "vendure"."shipping_method_translation" {
+//   "createdAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+//   "updatedAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+//   "languageCode" VARCHAR(255) [not null]
+//   "name" VARCHAR(255) [not null, default: ""]
+//   "description" VARCHAR(255) [not null, default: ""]
+//   "id" INT [pk, not null, increment]
+//   "baseId" INT [default: NULL]
+
+// Indexes {
+//   baseId [name:]
+// }
+// }
+
+Ref:"vendure"."shipping_method"."id" < "vendure"."shipping_method_translation"."baseId"
+// Ref:"vendure"."collection"."id" < "vendure"."collection_translation"."baseId" [delete: cascade]
+// Ref:"vendure"."country"."id" < "vendure"."country_translation"."baseId" [delete: cascade]
+
+Ref:"vendure"."product_option_group"."id" < "vendure"."product_option_group_translation"."baseId"
+
+Ref:"vendure"."product_option"."id" < "vendure"."product_option_translation"."baseId"
+
+Ref:"vendure"."product_variant"."id" < "vendure"."product_variant_translation"."baseId"
+Ref:"vendure"."facet"."id" < "vendure"."facet_translation"."baseId" [delete: cascade]
+Ref:"product"."id" < "product_translation"."baseId"

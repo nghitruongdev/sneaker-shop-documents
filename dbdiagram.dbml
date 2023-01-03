@@ -13,13 +13,7 @@ Table users {
   verified bit
   enabled bit
   created_at bigint
-  last_updated bigint
-}
-
-Table customers {
-  id  int [pk]
-  username varchar //should we use username as foreign key??
-  //...users
+  last_modified bigint
 }
 
 Table roles {
@@ -61,9 +55,11 @@ Table products {
   alias varchar
   short_desc varchar
   full_desc text
-  // price float ???
+  price float
+  allocated_quantity tinyint
   brand_id int
   discount_id int
+  status products_status
 }
 
 Table images {
@@ -122,6 +118,7 @@ Table attribute_values {
   attribute_type_id int
 }
 
+
 Table product_variants {
   id int [pk]
   sku varchar [note: 'auto create from option values']
@@ -169,7 +166,7 @@ Table product_tags {
 Table product_inventories {
   id int [pk]
   product_variant_id int
-  stock int
+  quantity int
   price float
 }
 
@@ -189,6 +186,14 @@ Table order_items {
   quantity int
   price float
   sub_total float //!check again
+}
+
+Table orders_tracking {
+  id int [pk]
+  order_id int
+  status order_status
+  modified_at bigint
+  modified_by int
 }
 
 Table payments {
@@ -224,12 +229,24 @@ Table sessions {
   user_data text
 }
 
+Enum products_status {
+  out_of_stock
+  in_stock
+  running_low [note: 'less than 20']
+}
+
+Enum order_status {
+  wait_for_verifed
+  verified
+  on_deliver
+  deliver_success
+  deliver_failed
+}
+
 ref: users.address_id - addresses.id
 // ref: users.avatar - images.id
 ref: user_roles.username < users.username
 ref: user_roles.role_id < roles.id
-
-ref: customers.username - users.username
 
 // ref: brands.logo - images.id
 ref: categories.collection_id > collections.id
@@ -250,7 +267,7 @@ ref: wish_lists.user_id - users.id
 ref: wish_list_items.wish_list_id > wish_lists.id
 ref: wish_list_items.product_id > products.id
 
-ref: shopping_carts.customer_id - customers.id
+ref: shopping_carts.customer_id - users.id
 ref: shopping_carts.session_id - sessions.id
 
 ref: shopping_cart_items.cart_id > shopping_carts.id
@@ -259,19 +276,21 @@ ref: shopping_cart_items.product_variant_id > product_variants.id
 ref: option_values.option_type_id > option_types.id
 ref: attribute_values.attribute_type_id > attribute_types.id
 
-ref: reviews.customer_id > customers.id
+ref: reviews.customer_id > users.id
 ref: reviews.product_id > products.id
 
-ref: orders.customer_id > customers.id
+ref: orders.customer_id > users.id
 ref: orders.payment_id - payments.id
 ref: orders.shipping_detail_id > shipping_details.id
+ref: orders_tracking.order_id - orders.id
+ref: orders_tracking.modified_by - users.id
 
 ref: order_items.order_id > orders.id
 ref: order_items.product_variant_id > product_variants.id
 
 ref: payments.method_id > payment_methods.id
 
-ref: shipping_details.customer_id > customers.id
+ref: shipping_details.customer_id > users.id
 ref: shipping_details.address_id - addresses.id
 
 ref: images.model_id > products.id

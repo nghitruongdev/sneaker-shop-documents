@@ -1,0 +1,43 @@
+Table "vendure"."shipping_method" {
+  "createdAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+  "updatedAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+  "deletedAt" DATETIME [default: NULL]
+  "code" VARCHAR(255) [not null]
+  "checker" TEXT [not null]
+  "calculator" TEXT [not null]
+  "fulfillmentHandlerCode" VARCHAR(255) [not null]
+  "id" INT [pk, not null, increment]
+}
+
+// Table "vendure"."shipping_line" {
+//   "createdAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+//   "updatedAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+//   "listPrice" INT [not null]
+//   "listPriceIncludesTax" TINYINT [not null]
+//   "adjustments" TEXT [not null]
+//   "taxLines" TEXT [not null]
+//   "id" INT [pk, not null, increment]
+//   "shippingMethodId" INT [not null]
+//   "orderId" INT [default: NULL]
+
+// Indexes {
+//   shippingMethodId [name:]
+//   orderId [name:]
+// }
+// }
+
+// Table "vendure"."shipping_method_channels_channel" {
+//   "shippingMethodId" INT [not null]
+//   "channelId" INT [not null]
+
+// Indexes {
+//   shippingMethodId [name: "IDX_f0a17b94aa5a162f0d422920eb"]
+//   channelId [name: "IDX_f2b98dfb56685147bed509acc3"]
+//   (shippingMethodId, channelId) [pk]
+// }
+// }
+
+
+
+Ref:"vendure"."shipping_method"."id" < "vendure"."shipping_line"."shippingMethodId"
+Ref:"vendure"."order"."id" < "vendure"."shipping_line"."orderId"
