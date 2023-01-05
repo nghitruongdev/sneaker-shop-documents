@@ -1,0 +1,214 @@
+enum ProductStatus {
+    OUT_OF_STOCK, IN_STOCK, RUNNING_LOW
+}
+enum OrderStatus {
+    WAIT_FOR_VERIFIED, VERIFIED, ON_DELIVER, DELIVERED_SUCCESS, DELIVERED_FAILED
+}
+entity Address(address) {
+    streetLine String maxlength(255)
+    city String maxlength(255)
+    province String maxlength(255)
+    createdAt Instant
+    updatedAt Instant
+}
+entity AppUser(app_user) {
+    username String maxlength(255)
+    passwordHash String maxlength(255)
+    email String maxlength(255)
+    phoneNo String maxlength(255)
+    firstName String maxlength(255)
+    lastName String maxlength(255)
+    avatar Integer
+    verified Boolean
+    enabled Boolean
+    verificationToken String maxlength(255)
+    passwordResetToken String maxlength(255)
+    lastLogin Instant
+    createdAt Instant
+    updatedAt Instant
+    deletedAt Instant
+}
+entity AttributeType(attribute_type) {
+    name String maxlength(255)
+    createdAt Instant
+    updatedAt Instant
+}
+entity Brand(brand) {
+    name String maxlength(255)
+    logo Integer
+    createdAt Instant
+    updatedAt Instant
+}
+entity Category(category) {
+    name String maxlength(255)
+    isRoot Boolean
+    createdAt Instant
+    updatedAt Instant
+}
+entity Collection(collection) {
+    name String maxlength(255)
+    createdAt Instant
+    updatedAt Instant
+}
+entity CustomerGroup(customer_group) {
+    name String maxlength(255)
+    createdAt Instant
+    updatedAt Instant
+}
+entity Discount(discount) {
+    code String maxlength(255)
+    name String maxlength(255)
+    desc String maxlength(255)
+    startTime Long
+    endTime Long
+    createdAt Instant
+    updatedAt Instant
+    deletedAt Instant
+}
+entity OptionType(option_type) {
+    code String maxlength(255)
+    createdAt Instant
+    updatedAt Instant
+}
+entity Order(order) {
+    active String maxlength(255)
+    orderPlacedAt Long
+    subTotal Float
+    createdAt Instant
+    updatedAt Instant
+}
+entity OrderLine(order_line) {
+    quantity Integer
+    price Float
+    createdAt Instant
+    updatedAt Instant
+}
+entity OrderTracking(order_tracking) {
+    status OrderStatus
+    createdAt Instant
+}
+entity Product(product) {
+    name String maxlength(255)
+    alias String maxlength(255)
+    shortDesc String maxlength(255)
+    fullDesc String maxlength(65535)
+    price Float
+    status ProductStatus
+    enabled Boolean
+    createdAt Instant
+    updatedAt Instant
+    deletedAt Instant
+}
+entity ProductAttribute(product_attribute) {
+    value String maxlength(255)
+    createdAt Instant
+    updatedAt Instant
+}
+entity ProductOption(product_option) {
+    createdAt Instant
+    updatedAt Instant
+}
+entity ProductOptionValue(product_option_value) {
+    code String maxlength(255)
+    createdAt Instant
+    updatedAt Instant
+}
+entity ProductPrice(product_price) {
+    price Float
+    createdAt Instant
+    updatedAt Instant
+}
+entity ProductVariant(product_variant) {
+    /** auto create from option values */
+    sku String maxlength(255)
+    stockOnHand Integer
+    stockAllocated Integer
+    enabled Boolean
+    createdAt Instant
+    updatedAt Instant
+    deletedAt Instant
+}
+entity ProductVariantInventory(product_variant_inventory) {
+    quantity Integer
+    createdAt Instant
+    updatedAt Instant
+}
+entity Review(review) {
+    headline String maxlength(255)
+    rating Boolean
+    comment String maxlength(255)
+    createdAt Instant
+    updatedAt Instant
+    deletedAt Instant
+}
+entity Role(role) {
+    code String maxlength(255)
+    desc String maxlength(255)
+    createdAt Instant
+    updatedAt Instant
+}
+entity ShippingAddress(shipping_address) {
+    fullName String maxlength(255)
+    phoneNo String maxlength(255)
+    isDefault Boolean
+}
+entity ShoppingCart(shopping_cart) {
+    quantity Boolean
+    createdAt Instant
+}
+entity UserSession(user_session) {
+    id String required maxlength(255)
+    ipAddress String maxlength(16)
+    userAgent String maxlength(50)
+    lastActivity Integer
+    createdAt Instant
+    updatedAt Instant
+}
+relationship ManyToOne {
+    AppUser{address} to Address{appUser}
+    Category{parent} to Category{category}
+    Order{customer} to AppUser{order}
+    Order{shippingAddress} to ShippingAddress{order}
+    OrderLine{order} to Order{orderLine}
+    OrderLine{productVariant} to ProductVariant{orderLine}
+    OrderTracking{order} to Order{orderTracking}
+    OrderTracking{createdBy} to AppUser{orderTracking}
+    Product{collection} to Collection{product}
+    Product{discount} to Discount{product}
+    Product{brand} to Brand{product}
+    ProductAttribute{attributeType} to AttributeType{productAttribute}
+    ProductAttribute{product} to Product{productAttribute}
+    ProductOption{product} to Product{productOption}
+    ProductOption{optionType} to OptionType{productOption}
+    ProductOptionValue{productOption} to ProductOption{productOptionValue}
+    ProductPrice{product} to Product{productPrice}
+    ProductVariant{product} to Product{productVariant}
+    ProductVariantInventory{productVariant} to ProductVariant{productVariantInventory}
+    Review{customer} to AppUser{review}
+    Review{product} to Product{review}
+    ShippingAddress{customer} to AppUser{shippingAddress}
+    ShippingAddress{address} to Address{shippingAddress}
+    ShoppingCart{productVariant} to ProductVariant{shoppingCart}
+    ShoppingCart{customer} to AppUser{shoppingCart}
+    ShoppingCart{session} to UserSession{shoppingCart}
+}
+relationship ManyToMany {
+    ProductVariant{optionValues} to ProductOptionValue{productVariants}
+    AppUser{roles} to Role{users}
+    AppUser{wishlist} to Product{userWishList}
+    Product{categories} to Category{products}
+    AppUser{customerGroup} to CustomerGroup{users}
+// ProductVariantOptionValue{productOptionValue} to ProductOptionValue{productVariantOptionValue}
+// ProductVariantOptionValue{productVariant} to ProductVariant{productVariantOptionValue}
+// WishListItem{product required} to Product{wishListItem}
+// WishListItem{customer required} to AppUser{wishListItem}
+// CategoryProduct{product required} to Product{categoryProduct}
+// CategoryProduct{category required} to Category{categoryProduct}
+// AppUserCustomerGroup{customerGroup required} to CustomerGroup{appUserCustomerGroup}
+// AppUserCustomerGroup{appUser required} to AppUser{appUserCustomerGroup}
+}
+// Options
+service * with serviceClass
+paginate * with pagination
+//dto * with mapstruct
+filter *

@@ -1,0 +1,419 @@
+// //* general
+// Table images {
+//   id int [pk, increment, not null]
+//   dtype varchar
+//   metadata json
+//   model_id int
+// }
+
+// ref: images.model_id - users.id
+// ref: images.model_id - brands.logo
+// ref: images.model_id - products.id
+// ref: images.model_id > product_variants.id
+
+Enum product_status {
+  out_of_stock
+  in_stock
+  running_low [note: 'less than 20']
+}
+
+Enum order_status {
+  wait_for_verifed
+  verified
+  on_deliver
+  deliver_success
+  deliver_failed
+}
+
+//*-----related to user
+// https://dbdiagram.io/d/63b1a3057d39e42284e85883
+Table app_user {
+  id int [pk, increment, not null]
+  username varchar
+  password_hash varchar
+  email varchar
+  phone_no varchar
+  first_name varchar
+  last_name varchar
+  avatar int
+  address_id int
+  verified bit
+  enabled bit
+  verification_token varchar
+  password_reset_token varchar
+  last_login datetime
+  created_at datetime
+  updated_at datetime
+  deleted_at datetime
+}
+
+Table role {
+  id tinyint [pk, increment, not null]
+  code varchar
+  desc varchar
+  created_at datetime
+  updated_at datetime
+}
+
+Table customer_group {
+  id tinyint [pk, increment, not null]
+  name varchar(255)
+  created_at datetime
+  updated_at datetime
+}
+
+Table address {
+  id int [pk, increment, not null]
+  street_line varchar
+  city varchar
+  province varchar
+  created_at datetime
+  updated_at datetime
+}
+
+Table shipping_address {
+  id int [pk, increment, not null]
+  customer_id int
+  full_name varchar
+  phone_no varchar
+  address_id int
+  is_default bit
+}
+
+//???????
+// Table billing_details {
+
+// }
+
+ref: app_user.id <> role.id
+ref: app_user.id <> customer_group.id
+
+ref: address.id - app_user.address_id
+
+
+ref: shipping_address.customer_id > app_user.id
+ref: address.id  - shipping_address.address_id
+
+//*------related to products
+
+
+Table brand {
+  id int [pk, increment, not null]
+  name varchar
+  logo int
+
+  created_at datetime
+  updated_at datetime
+}
+
+Table collection {
+  id int [pk, increment, not null]
+  name varchar
+
+  created_at datetime
+  updated_at datetime
+}
+
+Table category {
+  id int [pk, increment, not null]
+  name varchar
+  parent_id int
+  is_root bit
+
+  created_at datetime
+  updated_at datetime
+}
+
+// Table product_categories {
+//   id int [pk, increment, not null]
+//   product_id int
+//   category_id int
+// }
+
+Table product {
+  id int [pk, increment, not null]
+  name varchar
+  alias varchar
+  short_desc varchar
+  full_desc text
+  price float
+  brand_id int
+  discount_id int
+  collection_id int //?should collection_id be put in categories or products?
+  product_status product_status
+  enabled bit
+
+  created_at datetime
+  updated_at datetime
+  deleted_at datetime
+}
+
+Table product_variant {
+  id int [pk, increment, not null]
+  product_id int
+  sku varchar [note: 'auto create from option values']
+  stock_on_hand int
+  stock_allocated int
+  enabled bit
+  created_at datetime
+  updated_at datetime
+  deleted_at datetime
+}
+
+Table product_price {
+    id int [pk, increment, not null]
+    price float
+    product_id int
+    created_at datetime
+    updated_at datetime
+}
+
+Table discount {
+  id int [pk, increment, not null]
+  code varchar
+  name varchar
+  desc varchar
+  start_time bigint
+  end_time bigint
+
+  created_at datetime
+  updated_at datetime
+  deleted_at datetime
+}
+
+Table review {
+  id int [pk, increment, not null]
+  headline varchar
+  rating tinyint
+  comment varchar
+  customer_id int
+  product_id int
+  created_at datetime
+  updated_at datetime
+  deleted_at datetime
+}
+
+Table product_variant_inventory {
+  id int [pk, increment, not null]
+  product_variant_id int
+  quantity int
+  // price float
+  created_at datetime
+  updated_at datetime
+}
+
+ref: category.parent_id < category.id
+
+ref: product.id < product_price.product_id
+ref: product.id < product_variant.product_id
+
+ref: review.product_id > product.id
+ref: review.customer_id > app_user.id
+
+ref: product.brand_id > brand.id
+ref: product.collection_id > collection.id
+ref: category.id <> product.id
+ref: product.discount_id > discount.id
+
+ref: product_variant.id < product_variant_inventory.product_variant_id
+
+// *related to options
+Table option_type { //option: size, option: ram, option: ssd, option: color
+  id tinyint [pk, increment, not null]
+  code varchar
+
+  created_at datetime
+  updated_at datetime
+}
+
+//? one product can have multiple option types, one option types can belong to multiple groups
+Table product_option {
+    id int [pk, increment, not null]
+    product_id int
+    option_type_id tinyint
+
+    created_at datetime
+    updated_at datetime
+}
+
+Table product_option_value { //option:
+    id int [pk, increment, not null]
+    code varchar
+    product_option_id int
+
+    created_at datetime
+    updated_at datetime
+}
+
+Table product_variant_option_value {
+    product_variant_id int
+    product_option_value_id int
+}
+
+Table attribute_type {
+  id tinyint [pk, increment, not null]
+  name varchar
+  created_at datetime
+  updated_at datetime
+}
+
+Table product_attribute {
+  id int [pk, increment, not null]
+  attribute_type_id tinyint
+  product_id int
+  value varchar
+  created_at datetime
+  updated_at datetime
+}
+
+ref: product.id < product_option.product_id
+ref: product.id < product_attribute.product_id
+
+ref: option_type.id < product_option.option_type_id
+ref: product_option.id < product_option_value.product_option_id
+
+ref: product_variant.id < product_variant_option_value.product_variant_id
+ref: product_option_value.id < product_variant_option_value.product_option_value_id
+ref: attribute_type.id < product_attribute.attribute_type_id
+
+//* Shopping cart + WishList Item
+Table wish_list_item {
+  customer_id int
+  product_id int
+  Indexes {
+    (customer_id, product_id) [pk]
+  }
+}
+
+Table user_session {
+//   id int [pk, increment, not null]
+  id varchar [pk, not null]
+  ip_address varchar(16)
+  user_agent varchar(50)
+  last_activity int(10)
+  created_at datetime
+  updated_at datetime
+}
+
+Table shopping_cart {
+  id int [pk, increment, not null]
+  quantity tinyint
+  product_variant_id int
+  customer_id int [null]
+  session_id varchar
+  created_at datetime
+}
+
+ref: app_user.id - wish_list_item.customer_id
+ref: app_user.id - shopping_cart.customer_id
+ref: user_session.id - shopping_cart.session_id
+
+ref: product.id < wish_list_item.product_id
+ref: product_variant.id < shopping_cart.product_variant_id
+
+//related to orders
+Table order {
+  id int [pk, increment, not null]
+  customer_id int
+  shipping_address_id int
+  // code varchar
+  // state varchar
+  active varchar
+  order_placed_at bigint
+  // coupon_codes varchar
+  // billing_address varchar
+  sub_total float
+  created_at datetime
+  updated_at datetime
+}
+
+Table order_line {
+  id int [pk, increment, not null]
+  order_id int
+  product_variant_id int
+  quantity int
+  price float
+  created_at datetime
+  updated_at datetime
+}
+
+Table order_tracking {
+  id int [pk, increment, not null]
+  order_id int
+  order_status order_status
+  created_at datetime
+  created_by int
+}
+
+// Table payment_method {
+//   id tinyint [pk, increment, not null]
+//   code varchar(255) [not null, default: ""]
+//   name varchar(255) [not null, default: ""]
+//   description varchar(255) [not null, default: ""]
+//   // "checker" TEXT [default: NULL]
+//   // "handler" TEXT [not null]
+//   enabled bit [not null]
+
+//   created_at datetime [not null, default: `CURRENT_TIMESTAMP(6)`]
+//   updated_at datetime [not null, default: `CURRENT_TIMESTAMP(6)`]
+// }
+
+// Table payment {
+//   id int [pk, increment, not null]
+//   order_id int [default: NULL]
+//   transaction_id varchar(255) [default: NULL]
+//   method_id tinyint [not null]
+//   amount int [not null]
+//   state varchar(255) [not null]
+//   error_message varchar(255) [default: NULL]
+//   metadata text [not null]
+//   created_at datetime [not null, default: `CURRENT_TIMESTAMP(6)`]
+//   updated_at datetime [not null, default: `CURRENT_TIMESTAMP(6)`]
+
+// Indexes {
+//   order_id
+// }
+// }
+
+// Table shipping_method {
+//   id tinyint [pk, increment, not null]
+//   code varchar(255) [not null]
+// //   "checker" TEXT [not null]
+// //   "calculator" TEXT [not null]
+// //   "fulfillmentHandlerCode" VARCHAR(255) [not null]
+
+//   created_at datetime [not null, default: `CURRENT_TIMESTAMP(6)`]
+//   updated_at datetime [not null, default: `CURRENT_TIMESTAMP(6)`]
+//   deleted_at datetime [default: NULL]
+// }
+
+// Table shipping_order {
+//   id int [pk, increment, not null]
+//   order_id int [default: NULL]
+//   method_id tinyint [not null]
+//   price float [not null]
+// //   "listPriceIncludesTax" TINYINT [not null]
+// //   "adjustments" TEXT [not null]
+// //   "taxLines" TEXT [not null]
+//   created_at datetime [not null, default: `CURRENT_TIMESTAMP(6)`]
+//   updated_at datetime [not null, default: `CURRENT_TIMESTAMP(6)`]
+
+// Indexes {
+//   method_id
+//   order_id
+// }
+// }
+
+ref: order.customer_id > app_user.id
+ref: order.id < order_line.order_id
+ref: product_variant.id < order_line.product_variant_id
+
+// ref: order.id - payment.order_id
+// ref: order.id - shipping_order.order_id
+ref: order.shipping_address_id > shipping_address.id
+
+ref: order.id - order_tracking.order_id
+ref: app_user.id < order_tracking.created_by
+
+// ref: payment_method.id < payment.method_id
+// ref: shipping_method.id < shipping_order.method_id

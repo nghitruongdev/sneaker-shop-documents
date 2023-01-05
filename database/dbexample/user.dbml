@@ -8,6 +8,15 @@ Table "user" {
   "id" INT [pk, not null, increment]
 }
 
+Table "role" {
+  "createdAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+  "updatedAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
+  "code" VARCHAR(255) [not null]
+  "description" VARCHAR(255) [not null]
+  "permissions" TEXT [not null]
+  "id" INT [pk, not null, increment]
+}
+
 Table "customer" {
   "createdAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
   "updatedAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
@@ -64,14 +73,6 @@ Indexes {
 }
 }
 
-Table "role" {
-  "createdAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
-  "updatedAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
-  "code" VARCHAR(255) [not null]
-  "description" VARCHAR(255) [not null]
-  "permissions" TEXT [not null]
-  "id" INT [pk, not null, increment]
-}
 
 Table "authentication_method" {
   "createdAt" DATETIME(6) [not null, default: `CURRENT_TIMESTAMP(6)`]
